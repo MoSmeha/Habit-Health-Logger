@@ -73,7 +73,7 @@ abstract class Model {
     public static function update(mysqli $connection, $id, array $data): bool {
         $columns = array_keys($data);
 
-        // build "col1 = ?, col2 = ?, ..."
+        // col1 = ?, col2 = ?
         $setParts = [];
         foreach ($columns as $col) {
             $setParts[] = "$col = ?";
@@ -101,7 +101,12 @@ abstract class Model {
             }
         }
 
-        $types  = str_repeat('s', count($data)) . "i";
+        if (is_int($id)) $types .= "i";
+        else if (is_float($id)) $types .= "d";
+        else $types .= "s";
+
+        // append id to values
+        $values[] = $id;
 
         $stmt->bind_param($types, ...$values);
         return $stmt->execute();
