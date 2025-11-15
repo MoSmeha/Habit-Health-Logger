@@ -3,25 +3,25 @@ require __DIR__ . "/User.php";
 require __DIR__ . "/../db/db.php";   
 
 
-// $user = new User([
-//     "id" => 0,
-//     "username" => "mohamad",
-//     "email" => "test@test.com",
-//     "password" => "" 
-// ]);
+$user = new User([
+    "id" => 0,
+    "username" => "mohamad",
+    "email" => "test@email.com",
+    "password" => "" 
+]);
 
-// $user->setPassword("secret123");
+$user->setPassword("secret123");
 
 
-// var_dump($user);
+var_dump($user);
 
-// $id = User::create($connection, [
-//     "username" => $user->getUsername(),
-//     "email" => $user->getEmail(),
-//     "password" => $user->getPassword()
-// ]);
+$id = User::create($connection, [
+    "username" => $user->getUsername(),
+    "email" => $user->getEmail(),
+    "password" => $user->getPassword()
+]);
 
-// echo "Inserted user with ID: $id";
+echo "Inserted user with ID: $id";
 
 // $user = User::find($connection, 1);
 // var_dump($user);
@@ -35,4 +35,4 @@ require __DIR__ . "/../db/db.php";
 // } else {
 //     echo "Wrong password";
 // }
-User::delete($connection,1);
+// User::delete($connection,1);

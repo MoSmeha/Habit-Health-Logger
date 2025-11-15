@@ -13,7 +13,7 @@ class User extends Model {
     public function __construct(array $data){
         $this->id         = $data["id"];
         $this->username   = $data["username"];
-        $this->email      = $data["email"];
+        $this->setEmail($data["email"]);
         $this->password   = $data["password"];     // hashed password from DB
         $this->created_at = $data["created_at"] ?? date("Y-m-d H:i:s");
     }
@@ -32,8 +32,11 @@ class User extends Model {
     }
 
     public function setEmail(string $email){
-        $this->email = $email;
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new InvalidArgumentException("Invalid email format: $email");
     }
+    $this->email = $email;
+}
 
     public function getEmail(){
         return $this->email;
