@@ -28,7 +28,14 @@ document.addEventListener("DOMContentLoaded", () => {
             body: JSON.stringify({ username, email, password }),
           }
         );
+
+        if (!res.ok) {
+          console.error("server responded error :", res.status);
+          msg.textContent = `Server error: ${res.status}`;
+          return;
+        }
         const data = await res.json();
+        console.log(data);
 
         if (data.status !== 200) {
           msg.textContent = data.data || "Signup failed";
@@ -64,6 +71,13 @@ document.addEventListener("DOMContentLoaded", () => {
             body: JSON.stringify({ email, password }),
           }
         );
+
+        if (!res.ok) {
+          console.error("server responded error :", res.status);
+          msg.textContent = `Server error: ${res.status}`;
+          return;
+        }
+
         const data = await res.json();
 
         if (data.status !== 200) {
@@ -72,7 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         localStorage.setItem("user", JSON.stringify(data.data));
-        location.href = "/Health_AI/Frontend/Pages/dashboard.html";
+        const userType = JSON.parse(localStorage.getItem("user")).role;
+        console.log(userType);
+        if (userType === "user") {
+          location.href = "/Health_AI/Frontend/Pages/dashboard.html";
+        } else {
+          location.href = "/Health_AI/Frontend/Pages/admin.html";
+        }
       } catch (e) {
         msg.textContent = "error logging in";
       }

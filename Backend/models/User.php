@@ -16,6 +16,7 @@ class User extends Model {
         $this->setEmail($data["email"]);
         $this->password   = $data["password"];     // hashed password from DB
         $this->created_at = $data["created_at"] ?? date("Y-m-d H:i:s");
+        $this->role = $data["role"] ?? "user";
     }
 
 
@@ -69,6 +70,7 @@ class User extends Model {
             "id"         => $this->id,
             "username"   => $this->username,
             "email"      => $this->email,
+            "role"      => $this->role,
             "created_at" => $this->created_at
         ];
     }

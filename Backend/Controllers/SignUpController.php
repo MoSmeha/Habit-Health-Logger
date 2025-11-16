@@ -22,7 +22,8 @@ class SignupController {
                 'username' => $username,
                 'email' => $email,
                 'password' => $password,
-                'created_at' => date("Y-m-d H:i:s")
+                'created_at' => date("Y-m-d H:i:s"),
+                'role'=> 'user'
             ]);
         } catch (Exception $e) {
             echo ResponseService::response(400, $e->getMessage());
