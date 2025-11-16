@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Dashboard</title>
+    <style>
+      body {
+        font-family: system-ui;
+        margin: 40px;
+        background: #f7f8fb;
+      }
+      .card {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Dashboard</h2>
+      <div id="userBox"></div>
+      <button id="logout">Logout</button>
+    </div>
+
+    <script>
+      const userBox = document.getElementById("userBox");
+      const raw = localStorage.getItem("user");
+      if (!raw) {
+        window.location.href = "/Health_AI/Frontend/Pages/Login.html";
+        throw "";
+      }
+      const user = JSON.parse(raw);
+      userBox.innerHTML = `<pre>${JSON.stringify(user, null, 2)}</pre>`;
+
+      document.getElementById("logout").addEventListener("click", () => {
+        localStorage.removeItem("user");
+        location.href = "/Health_AI/Frontend/Pages/Login.html";
+      });
+    </script>
+  </body>
+</html>
