@@ -1,10 +1,12 @@
 <?php
-abstract class Model {
+abstract class Model
+{
 
     protected static string $table;
     protected static string $primary_key = "id";
 
-    public static function find(mysqli $connection, $id) {
+    public static function find(mysqli $connection, $id)
+    {
         $sql = sprintf(
             "SELECT * FROM %s WHERE %s = ? LIMIT 1",
             static::$table,
@@ -19,25 +21,42 @@ abstract class Model {
         return $data ? new static($data) : null;
     }
 
-    // to use in email
-    public static function findBy(mysqli $connection, string $column, $value) {
-        $sql = sprintf("SELECT * FROM %s WHERE %s = ? LIMIT 1", static::$table, $column);
+    // can return null to pass limit or not, 
+    public static function findBy(mysqli $connection, string $column, $value, ?int $limit = null)
+    {
+        $sql = sprintf(
+            "SELECT * FROM %s WHERE %s = ?%s",
+            static::$table,
+            $column,
+            $limit ? " LIMIT $limit" : ""
+        );
+
         $stmt = $connection->prepare($sql);
-        if (is_int($value)) {
-            $type = "i";
-        } else if (is_float($value)) {
-            $type = "d";
-        } else {
-            $type = "s";
-        }
+
+        if (is_int($value)) $type = "i";
+        else if (is_float($value)) $type = "d";
+        else $type = "s";
+
         $stmt->bind_param($type, $value);
         $stmt->execute();
 
-        $data = $stmt->get_result()->fetch_assoc();
-        return $data ? new static($data) : null;
+        $result = $stmt->get_result();
+
+        if ($limit === 1) {
+            $data = $result->fetch_assoc();
+            return $data ? new static($data) : null;
+        }
+
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = new static($row);
+        }
+        return $rows;
     }
 
-    public static function findAll(mysqli $connection): array {
+
+    public static function findAll(mysqli $connection): array
+    {
         $sql = sprintf(
             "SELECT * FROM %s",
             static::$table
@@ -56,10 +75,11 @@ abstract class Model {
         return $rows;
     }
 
-    public static function create(mysqli $connection, array $data): int {
-        $columns = array_keys($data);     
+    public static function create(mysqli $connection, array $data): int
+    {
+        $columns = array_keys($data);
         $placeholders = implode(',', array_fill(0, count($columns), '?'));
-        $cols = implode(',', $columns);  
+        $cols = implode(',', $columns);
 
         $sql = sprintf(
             "INSERT INTO %s (%s) VALUES (%s)",
@@ -88,7 +108,8 @@ abstract class Model {
         return $connection->insert_id;
     }
 
-    public static function update(mysqli $connection, $id, array $data): bool {
+    public static function update(mysqli $connection, $id, array $data): bool
+    {
         $columns = array_keys($data);
 
         // col1 = ?, col2 = ?
@@ -130,7 +151,8 @@ abstract class Model {
         return $stmt->execute();
     }
 
-    public static function delete(mysqli $connection, $id): bool {
+    public static function delete(mysqli $connection, $id): bool
+    {
         $sql = sprintf(
             "DELETE FROM %s WHERE %s = ?",
             static::$table,
@@ -143,4 +165,3 @@ abstract class Model {
         return $stmt->execute();
     }
 }
-?>
