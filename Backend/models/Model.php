@@ -19,6 +19,24 @@ abstract class Model {
         return $data ? new static($data) : null;
     }
 
+    // to use in email
+    public static function findBy(mysqli $connection, string $column, $value) {
+        $sql = sprintf("SELECT * FROM %s WHERE %s = ? LIMIT 1", static::$table, $column);
+        $stmt = $connection->prepare($sql);
+        if (is_int($value)) {
+            $type = "i";
+        } else if (is_float($value)) {
+            $type = "d";
+        } else {
+            $type = "s";
+        }
+        $stmt->bind_param($type, $value);
+        $stmt->execute();
+
+        $data = $stmt->get_result()->fetch_assoc();
+        return $data ? new static($data) : null;
+    }
+
     public static function findAll(mysqli $connection): array {
         $sql = sprintf(
             "SELECT * FROM %s",
