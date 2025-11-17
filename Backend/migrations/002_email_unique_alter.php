@@ -1,19 +1,1 @@
 ALTER TABLE users ADD UNIQUE (email);
-
-CREATE TABLE user_entries (
-id INT AUTO_INCREMENT PRIMARY KEY,
-user_id INT NOT NULL,
-input_text TEXT NOT NULL,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE parsed_entries (
-id INT AUTO_INCREMENT PRIMARY KEY,
-user_entry_id INT NOT NULL,
-slept VARCHAR(255),
-coffee INT,
-walked VARCHAR(255),
-meal VARCHAR(255),
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-FOREIGN KEY (user_entry_id) REFERENCES user_entries(id) ON DELETE CASCADE
-);
