@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habits</title>
+    <link rel="stylesheet" href="../styles/habits.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-left">
+        <span class="logo">Health AI</span>
+      </div>
+
+      <div class="nav-right">
+        <a href="habits.html">Habits</a>
+        <a href="dashboard.html">dashboard</a>
+        <a href="Login.html">Nutrition</a>
+        <a href="#">later</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1>My Habits</h1>
+
+      <div id="userInfo">Loading...</div>
+
+      <form id="createForm">
+        <input
+          type="text"
+          id="nameInput"
+          placeholder="New habit name..."
+          required
+        />
+        <button type="submit">Add</button>
+      </form>
+
+      <div id="message"></div>
+      <div id="habitList"></div>
+    </div>
+
+    <script src="../Scripts/habits.js"></script>
+  </body>
+</html>
