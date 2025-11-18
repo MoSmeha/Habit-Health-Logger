@@ -1,233 +1,123 @@
 <?php
-
+//Entry Controller
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require_once __DIR__ . '/../db/db.php';
-require_once __DIR__ . '/../models/Model.php';
-require_once __DIR__ . '/../models/Entry.php';
-require_once __DIR__ . '/../models/ParsedEntry.php';
+require __DIR__ . '/../db/db.php';
+require __DIR__ . '/../models/Entry.php';
+require __DIR__ . '/../models/ParsedEntry.php';
+require __DIR__ . '/../Services/AiParser.php';
+require __DIR__ . '/../Services/ResponseService.php';
 
-function jsonResponse(int $statusCode, array $payload)
+class UserEntryController
 {
-    http_response_code($statusCode);
-    header('Content-Type: application/json');
-    echo json_encode($payload);
-    exit;
-}
+    public function parseOnly()
+    {
+        $input = json_decode(file_get_contents("php://input"), true);
+        $text = $input['input_text'] ?? null;
 
-function callOpenAiCurl(string $userText): array
-{
-    $openaiKey = "" ?: null;
-    if (!$openaiKey) {
-        return [
-            'ok' => false,
-            'error' => 'OpenAI API key not configured. Set OPENAI_API_KEY environment variable.'
-        ];
-    }
+        if (!$text) {
+            echo ResponseService::response(400, "Missing input_text");
+            return;
+        }
 
-    $systemPrompt = <<<SYS
-    You are a JSON extractor for a health-logging app. Your task is to analyze a user's free-text health log and return **only valid JSON** (no extra commentary) based on the information provided.
+        try {
+            // Ask AI to parse
+            $aiResp = AiParser::callOpenAi($text);
 
-    Please use your best judgment to estimate and log the following details:
+            if (!$aiResp['ok']) {
+                echo ResponseService::response(400, [
+                    "error" => $aiResp["error"]
+                ]);
+                return;
+            }
 
-    - "slept" : string|null (The duration of sleep, e.g., "7 hours" , "6:30" , or null if not mentioned.)
-    - "coffee" : integer|null (Your estimated total caffeine intake in milligrams (mg). Assume **100 mg per standard cup of coffee** unless the user specifies a different drink or quantity, or null if not mentioned.)
-    - "walked" : string|null (The duration or distance of walking exercise, e.g., "45 mins" , "2 km" , or null.)
-    - "meal" : string|null (A brief, descriptive summary of a meal or main food item mentioned, or null.)
+            $parsed = AiParser::extract($aiResp["content"]);
 
-    If any piece of information is not clearly present in the text, set its value to **null**. Ignore any info outside the info provided above. Always ensure the final output is **valid JSON**.
-    SYS;
+            if (!$parsed) {
+                echo ResponseService::response(200, [
+                    "parsed" => [
+                        "slept" => null,
+                        "coffee" => null,
+                        "walked" => null,
+                        "meal" => null
+                    ]
+                ]);
+                return;
+            }
 
-    $messages = [
-        ['role' => 'system', 'content' => $systemPrompt],
-        ['role' => 'user', 'content' => $userText]
-    ];
+            // Normalize and return (don't save yet)
+            $normalized = AiParser::normalize($parsed);
 
-    $payload = [
-        'model' => 'gpt-3.5-turbo',
-        'messages' => $messages,
-        'temperature' => 0.0,
-        'max_tokens' => 250
-    ];
-
-    $ch = curl_init('https://api.openai.com/v1/chat/completions');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "Content-Type: application/json",
-        "Authorization: Bearer {$openaiKey}"
-    ]);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-
-    $result = curl_exec($ch);
-    if ($result === false) {
-        $err = curl_error($ch);
-        curl_close($ch);
-        return ['ok' => false, 'error' => "Curl error: {$err}"];
-    }
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    $decoded = json_decode($result, true);
-    if ($decoded === null) {
-        return ['ok' => false, 'error' => 'Invalid JSON response from OpenAI', 'raw' => $result, 'http_code' => $httpCode];
-    }
-
-    if (isset($decoded['error'])) {
-        return ['ok' => false, 'error' => $decoded['error']];
-    }
-
-    $content = $decoded['choices'][0]['message']['content'] ?? ($decoded['choices'][0]['text'] ?? null);
-
-    return ['ok' => true, 'content' => $content, 'raw_response' => $decoded];
-}
-
-function extractJsonFromModelOutput(string $text): ?array
-{
-    $text = trim($text);
-
-    $direct = json_decode($text, true);
-    if (is_array($direct)) return $direct;
-
-    $first = strpos($text, '{');
-    $last = strrpos($text, '}');
-    if ($first !== false && $last !== false && $last > $first) {
-        $substr = substr($text, $first, $last - $first + 1);
-        $dec = json_decode($substr, true);
-        if (is_array($dec)) return $dec;
-    }
-
-    return null;
-}
-
-function normalizeParsed(array $parsed): array
-{
-    $result = [
-        'slept' => null,
-        'coffee' => null,
-        'walked' => null,
-        'meal' => null
-    ];
-
-    if (array_key_exists('slept', $parsed)) {
-        $s = $parsed['slept'];
-        if ($s === null) $result['slept'] = null;
-        else $result['slept'] = (string)$s;
-    }
-
-    if (array_key_exists('coffee', $parsed)) {
-        $c = $parsed['coffee'];
-        if ($c === null || $c === '') {
-            $result['coffee'] = null;
-        } else if (is_int($c)) {
-            $result['coffee'] = $c;
-        } else if (is_string($c) && preg_match('/^\d+$/', trim($c))) {
-            $result['coffee'] = (int)trim($c);
-        } else {
-            $result['coffee'] = null;
+            echo ResponseService::response(200, [
+                "parsed" => $normalized
+            ]);
+        } catch (Exception $e) {
+            echo ResponseService::response(500, "Server error: " . $e->getMessage());
         }
     }
 
-    if (array_key_exists('walked', $parsed)) {
-        $w = $parsed['walked'];
-        if ($w === null) $result['walked'] = null;
-        else $result['walked'] = (string)$w;
-    }
+    public function create()
+    {
+        global $connection;
+        $input = json_decode(file_get_contents("php://input"), true);
 
-    if (array_key_exists('meal', $parsed)) {
-        $m = $parsed['meal'];
-        if ($m === null) $result['meal'] = null;
-        else $result['meal'] = (string)$m;
-    }
+        $userId = $input['user_id'] ?? null;
+        $text = $input['input_text'] ?? null;
+        $slept = $input['slept'] ?? null;
+        $coffee = $input['coffee'] ?? null;
+        $walked = $input['walked'] ?? null;
+        $meal = $input['meal'] ?? null;
 
-    return $result;
+        if (!$userId || !$text) {
+            echo ResponseService::response(400, "Missing user_id or input_text");
+            return;
+        }
+
+        try {
+            //Save raw user entry
+            $userEntryId = UserEntry::create($connection, [
+                "user_id" => (int)$userId,
+                "input_text" => $text,
+                "created_at" => date("Y-m-d H:i:s"),
+            ]);
+
+            if (!$userEntryId) {
+                echo ResponseService::response(500, "Failed to insert user entry");
+                return;
+            }
+
+            // Save the parsed entry (from frontend)
+            $parsedId = ParsedEntry::create($connection, [
+                "user_entry_id" => $userEntryId,
+                "slept" => $slept,
+                "coffee" => $coffee ? (int)$coffee : null,
+                "walked" => $walked,
+                "meal" => $meal,
+            ]);
+
+            echo ResponseService::response(201, [
+                "user_entry_id" => $userEntryId,
+                "parsed_entry_id" => $parsedId
+            ]);
+        } catch (Exception $e) {
+            echo ResponseService::response(500, "Server error: " . $e->getMessage());
+        }
+    }
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    jsonResponse(405, ['error' => 'Method not allowed. Use POST.']);
-}
+$controller = new UserEntryController();
+$action = $_GET['action'] ?? 'create';
 
-$raw = file_get_contents('php://input');
-$input = json_decode($raw, true);
-
-if (!is_array($input)) {
-    jsonResponse(400, ['error' => 'Invalid JSON body.']);
-}
-
-$userId = isset($input['user_id']) ? (int)$input['user_id'] : null;
-$inputText = isset($input['input_text']) ? trim($input['input_text']) : null;
-
-if (!$userId || !$inputText) {
-    jsonResponse(400, ['error' => 'Missing user_id or input_text.']);
-}
-global $connection;
-if (!($connection instanceof mysqli)) {
-    jsonResponse(500, ['error' => 'Database connection not available.']);
-}
-
-try {
-    $userEntryData = [
-        'user_id' => $userId,
-        'input_text' => $inputText
-    ];
-    $userEntryId = UserEntry::create($connection, $userEntryData);
-
-    if (!$userEntryId) {
-        jsonResponse(500, ['error' => 'Failed to insert user entry.']);
-    }
-
-    $aiResp = callOpenAiCurl($inputText);
-    if (!$aiResp['ok']) {
-        jsonResponse(200, [
-            'message' => 'Saved raw entry, but failed to parse with OpenAI.',
-            'user_entry_id' => $userEntryId,
-            'openai_error' => $aiResp['error'] ?? 'unknown',
-            'openai_raw' => $aiResp['raw'] ?? null
-        ]);
-    }
-
-    $content = $aiResp['content'] ?? '';
-    $parsed = extractJsonFromModelOutput($content);
-
-    if ($parsed === null) {
-        $parsedValues = [
-            'user_entry_id' => $userEntryId,
-            'slept' => null,
-            'coffee' => null,
-            'walked' => null,
-            'meal' => null
-        ];
-        $parsedId = ParsedEntry::create($connection, $parsedValues);
-
-        jsonResponse(200, [
-            'message' => 'Saved raw entry. OpenAI did not produce valid JSON; saved empty parsed entry.',
-            'user_entry_id' => $userEntryId,
-            'parsed_entry_id' => $parsedId,
-            'openai_content' => $content
-        ]);
-    }
-
-    $normalized = normalizeParsed($parsed);
-    $parsedValues = [
-        'user_entry_id' => $userEntryId,
-        'slept' => $normalized['slept'],
-        'coffee' => $normalized['coffee'],
-        'walked' => $normalized['walked'],
-        'meal' => $normalized['meal']
-    ];
-
-    $parsedId = ParsedEntry::create($connection, $parsedValues);
-
-    jsonResponse(201, [
-        'message' => 'Saved entry and parsed data successfully.',
-        'user_entry_id' => $userEntryId,
-        'parsed_entry_id' => $parsedId,
-        'parsed' => $normalized,
-        'openai_raw_content' => $content
-    ]);
-} catch (Exception $e) {
-    jsonResponse(500, ['error' => 'Server error: ' . $e->getMessage()]);
+switch ($_SERVER["REQUEST_METHOD"]) {
+    case "POST":
+        // i pass this in frotnend (fetch)
+        if ($action === 'parse') {
+            $controller->parseOnly();
+        } else {
+            $controller->create();
+        }
+        break;
+    default:
+        echo ResponseService::response(405, "Method Not Allowed");
 }

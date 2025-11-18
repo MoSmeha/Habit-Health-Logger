@@ -1,12 +1,17 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 require __DIR__ . '/../db/db.php';
 require __DIR__ . '/../models/User.php';
 require __DIR__ . '/../Services/ResponseService.php';
 
-class SignupController {
+class SignupController
+{
 
-    public function register() {
+    public function register()
+    {
         global $connection;
         $input = json_decode(file_get_contents('php://input'), true);
         $username = $input['username'] ?? '';
@@ -23,7 +28,7 @@ class SignupController {
                 'email' => $email,
                 'password' => $password,
                 'created_at' => date("Y-m-d H:i:s"),
-                'role'=> 'user'
+                'role' => 'user'
             ]);
         } catch (Exception $e) {
             echo ResponseService::response(400, $e->getMessage());
@@ -40,12 +45,12 @@ class SignupController {
             ]);
         } catch (mysqli_sql_exception $e) {
             // unique email 
-        if ($e->getCode() === 1062) {  
-            echo ResponseService::response(400, "Email already registered");
-        } else {
-            echo ResponseService::response(500, "Could not create user".$e->getMessage());
-        }
-        return;
+            if ($e->getCode() === 1062) {
+                echo ResponseService::response(400, "Email already registered");
+            } else {
+                echo ResponseService::response(500, "Could not create user" . $e->getMessage());
+            }
+            return;
         }
 
         $userObj = User::find($connection, $id);
