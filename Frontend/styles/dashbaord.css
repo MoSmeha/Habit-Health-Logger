@@ -1,0 +1,159 @@
+body {
+  background-color: #f4f7f6;
+  color: #333;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #aaaaaa;
+  padding: 12px 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  margin-bottom: 25px;
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+.nav-left .logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2b7cff;
+}
+
+.nav-right a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #444;
+  font-size: 14px;
+}
+
+.nav-right a:hover {
+  color: #2b7cff;
+}
+
+.dashboard-container {
+  margin: 0 5%;
+}
+
+h1 {
+  color: #005a9c;
+  margin-top: 0;
+}
+#welcomeHeader {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+#welcomeHeader h2 {
+  margin: 0;
+  color: #2c3e50;
+}
+#welcomeHeader p {
+  margin: 5px 0 0;
+  font-size: 0.9em;
+  color: #555;
+}
+#userInfo {
+  font-size: 0.8em;
+  color: #777;
+  margin-bottom: 20px;
+}
+#parsedFields {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+#parsedFields label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+textarea {
+  margin-top: 10px;
+  min-height: 120px;
+}
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+button:hover {
+  background-color: #0056b3;
+}
+#parseBtn {
+  background-color: #28a745;
+}
+#parseBtn:hover {
+  background-color: #218838;
+}
+#response {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+#quickAddSection {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+}
+.quick-add-info {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: -10px;
+  margin-bottom: 15px;
+}
+#quickAddForm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 15px;
+}
+#quickAddForm div {
+  display: flex;
+  flex-direction: column;
+}
+#quickAddForm label {
+  font-size: 0.9em;
+  color: #555;
+  margin-bottom: 4px;
+}
+#quickAddForm input[type="text"],
+#quickAddForm input[type="number"] {
+  width: 140px;
+  padding: 8px;
+  font-size: 0.9em;
+}
+#generateTextBtn {
+  margin-top: 0;
+  padding: 8px 15px;
+  font-size: 0.9em;
+}
+
+.separator {
+  margin: 25px 0;
+}
