@@ -20,7 +20,7 @@ class ParsedEntryController
             return;
         }
 
-        $entries = ParsedEntry::findBy($connection, "user_id", $userId);
+        $entries = ParsedEntry::findByUserId($connection, $userId);
 
         $out = [];
         foreach ($entries as $e) {

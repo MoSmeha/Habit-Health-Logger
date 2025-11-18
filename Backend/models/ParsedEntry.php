@@ -82,6 +82,26 @@ class ParsedEntry extends Model
         $this->meal = $meal;
     }
 
+    public static function findByUserId(mysqli $connection, int $userId): array
+    {
+        //pe and ue alias for table names
+        $sql = "SELECT pe.* FROM parsed_entries pe
+            INNER JOIN user_entries ue ON pe.user_entry_id = ue.id
+            WHERE ue.user_id = ?";
+
+        $stmt = $connection->prepare($sql);
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $rows = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = new static($row);
+        }
+
+        return $rows;
+    }
     // Convert object to array
     public function toArray(): array
     {
