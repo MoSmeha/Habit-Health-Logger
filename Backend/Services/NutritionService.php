@@ -57,7 +57,7 @@ class MealSuggestionService
 
     private static function callAIForSuggestions(string $mealSummary): array
     {
-        $openaiKey = "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 " ?: null;
+        $openaiKey = "" ?: null;
 
         if (!$openaiKey) {
             return ['ok' => false, 'error' => 'OpenAI API key missing'];
