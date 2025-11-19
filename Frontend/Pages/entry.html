@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Health Logger</title>
+    <link rel="stylesheet" href="../styles/dashbaord.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-left">
+        <span class="logo">Health AI</span>
+      </div>
+      <div class="nav-right">
+        <a href="habits.html">Habits</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="Login.html">Nutrition</a>
+        <a href="#">Later</a>
+      </div>
+    </nav>
+    <div class="dashboard-container">
+      <div id="welcomeHeader">Loading...</div>
+      <div id="userInfo">Loading...</div>
+
+      <h2>Your Log Entry</h2>
+      <textarea
+        id="userText"
+        rows="6"
+        placeholder="Write your health log here, or generate it from the form below"
+      ></textarea
+      ><br />
+
+      <div id="quickAddSection">
+        <p class="quick-add-info">
+          Fill these fields and hit "Generate Text" to auto fill the log above.
+        </p>
+        <div id="quickAddForm">
+          <div>
+            <label for="quickSlept">Slept:</label>
+            <input type="text" id="quickSlept" placeholder="ex: 8 (hours)" />
+          </div>
+          <div>
+            <label for="quickCoffee">Coffee:</label>
+            <input type="number" id="quickCoffee" placeholder="ex: 2 (cups)" />
+          </div>
+          <div>
+            <label for="quickWalked">Walked:</label>
+            <input
+              type="text"
+              id="quickWalked"
+              placeholder="ex: 5000 (steps)"
+            />
+          </div>
+          <div>
+            <label for="quickMeal">Meal:</label>
+            <input
+              type="text"
+              id="quickMeal"
+              placeholder="ex: chicken and rice"
+            />
+          </div>
+          <button id="generateTextBtn">Generate Text</button>
+        </div>
+      </div>
+      <button id="parseBtn">Parse with AI</button>
+
+      <hr class="separator" />
+
+      <h2>Parsed Data (Editable)</h2>
+      <div id="parsedFields" style="display: none">
+        <label>Slept: <input type="text" id="slept" /></label><br />
+        <label>Coffee: <input type="number" id="coffee" /></label><br />
+        <label>Walked: <input type="text" id="walked" /></label><br />
+        <label>Meal: <input type="text" id="meal" /></label><br />
+        <button id="submitBtn">Submit to Database</button>
+      </div>
+
+      <div id="response"></div>
+    </div>
+    <script src="../Scripts/dashboard.js"></script>
+  </body>
+</html>
