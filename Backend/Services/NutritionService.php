@@ -39,7 +39,6 @@ class MealSuggestionService
         // Prepare the meal summary for AI
         $mealSummary = self::formatMealsForAI($meals);
 
-        // Call AI to get suggestions
         return self::callAIForSuggestions($mealSummary);
     }
 
@@ -69,7 +68,7 @@ You are a professional nutritionist and health advisor. Analyze the user's meal 
 
 Your response should:
 1. Briefly analyze their current eating patterns (2-3 sentences)
-2. Suggest 5 healthy meal ideas that:
+2. Suggest 3 healthy meal ideas that:
    - Complement or improve upon their current diet
    - Include a variety of nutrients
    - Are practical and easy to prepare
@@ -128,7 +127,7 @@ SYS;
 
         $content = $decoded["choices"][0]["message"]["content"] ?? "";
 
-        // Extract and parse JSON from response
+
         $suggestions = self::extractJSON($content);
 
         if (!$suggestions) {
@@ -148,13 +147,13 @@ SYS;
 
     private static function extractJSON(string $text): ?array
     {
-        // Try direct JSON decode first
+        // Try direct json decode first
         $direct = json_decode($text, true);
         if (is_array($direct)) {
             return $direct;
         }
 
-        // Try to find JSON in the text
+        // Try to find json in the text
         $first = strpos($text, "{");
         $last = strrpos($text, "}");
 

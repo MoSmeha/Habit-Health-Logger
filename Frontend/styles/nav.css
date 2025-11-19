@@ -1,0 +1,34 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f7f9fc;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  line-height: 1.6;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #4caf50;
+  padding: 15px 20px;
+  color: white;
+}
+
+.nav-left .logo {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white !important;
+}
+
+.nav-right a {
+  margin-left: 20px;
+  color: white !important;
+  font-size: 14px;
+}
+
+.nav-right a.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
