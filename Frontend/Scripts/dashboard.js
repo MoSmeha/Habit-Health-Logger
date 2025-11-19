@@ -1,8 +1,3 @@
-function getUser() {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
-}
-
 function renderUser() {
   const user = getUser();
   const userInfoDiv = document.getElementById("userInfo");
@@ -26,24 +21,7 @@ function renderUser() {
   }
 }
 renderUser();
-function renderAdminLink() {
-  const user = getUser();
-  const navbar = document.getElementById("navbarLinks");
 
-  if (!user || !navbar) return;
-
-  // Prevent duplicating admin link if the page reloads
-  if (document.getElementById("adminLink")) return;
-
-  if (user.role === "admin") {
-    const link = document.createElement("a");
-    link.href = "admin.html";
-    link.id = "adminLink";
-    link.innerText = "Admin";
-    navbar.appendChild(link);
-  }
-}
-renderAdminLink();
 const user = getUser();
 const userId = user ? user.id : null;
 
@@ -87,7 +65,8 @@ generateTextBtn.addEventListener("click", () => {
   const existingText = userTextArea.value.trim();
   if (existingText) {
     userTextArea.value = existingText + " " + parts.join(" ");
-  } else {
+  }
+  else {
     userTextArea.value = parts.join(" ");
   }
 
