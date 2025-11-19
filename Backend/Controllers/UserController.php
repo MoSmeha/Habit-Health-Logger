@@ -143,7 +143,6 @@ class UserController
     }
 }
 
-// Minimal routing
 $controller = new UserController();
 
 switch ($_SERVER['REQUEST_METHOD']) {

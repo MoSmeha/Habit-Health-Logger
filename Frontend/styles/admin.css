@@ -44,6 +44,7 @@ body {
 .container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 h1 {
@@ -58,6 +59,7 @@ h1 {
   padding: 12px;
   border-radius: 4px;
   margin-bottom: 20px;
+  display: none;
 }
 
 .loading {
@@ -103,6 +105,12 @@ tbody tr:hover {
   background: #f8f9fa;
 }
 
+.btn-container {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
 .actions {
   display: flex;
   gap: 8px;
@@ -142,18 +150,85 @@ tbody tr:hover {
 }
 
 input[type="text"],
-input[type="number"] {
+input[type="email"],
+input[type="password"],
+select {
   width: 100%;
-  padding: 6px 8px;
+  padding: 8px 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: #999;
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.badge-admin {
+  background: #ffc107;
+  color: #000;
+}
+
+.badge-user {
+  background: #17a2b8;
+  color: white;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  overflow: auto;
+}
+
+.modal-content {
+  background: white;
+  max-width: 500px;
+  margin: 50px auto;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close {
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.form-actions {
+  margin-top: 30px;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 @media (max-width: 768px) {
