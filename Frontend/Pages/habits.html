@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Habits</title>
+    <title>Habits & AI Analysis</title>
     <link rel="stylesheet" href="../styles/habits.css" />
   </head>
   <body>
@@ -11,32 +11,37 @@
       <div class="nav-left">
         <a class="logo" href="dashboard.html"><span>Health AI</span></a>
       </div>
-
       <div class="nav-right" id="navbarLinks">
         <a href="entries.html">Entries</a>
         <a class="active" href="habits.html">Habits</a>
         <a href="Nutrition.html">Nutrition</a>
-        <a href="#">later</a>
       </div>
     </nav>
 
     <div class="container">
-      <h1>My Habits</h1>
-
-      <div id="userInfo">Loading...</div>
+      <h1>Manage Habits</h1>
+      <div id="userInfo">Checking login...</div>
 
       <form id="createForm">
         <input
           type="text"
           id="nameInput"
-          placeholder="New habit name..."
+          placeholder="Enter habit name..."
           required
         />
-        <button type="submit">Add</button>
+        <button type="submit">Add Habit</button>
       </form>
 
-      <div id="message"></div>
       <div id="habitList"></div>
+    </div>
+
+    <div class="container">
+      <h1>AI Coach Analysis</h1>
+      <p style="color: #666; margin-bottom: 15px">
+        Review your weekly logs against active habits.
+      </p>
+      <button id="analyzeBtn" class="analyze-btn">Analyze My Week</button>
+      <div id="results" style="margin-top: 25px"></div>
     </div>
 
     <script src="../Scripts/habits.js"></script>
