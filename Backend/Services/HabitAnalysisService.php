@@ -135,4 +135,50 @@ SYS;
 
         return $rows;
     }
+
+    public static function getSleepData(mysqli $connection, int $userId): array
+    {
+        $monthAgo = date('Y-m-d H:i:s', strtotime('-30 days'));
+        $sql = "SELECT DATE(ue.created_at) as date, SUM(pe.slept) as value
+                FROM parsed_entries pe
+                JOIN user_entries ue ON pe.user_entry_id = ue.id
+                WHERE ue.user_id = ? AND ue.created_at >= ? AND pe.slept > 0
+                GROUP BY date
+                ORDER BY date ASC";
+
+        $stmt = $connection->prepare($sql);
+        $stmt->bind_param("is", $userId, $monthAgo);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rows = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
+
+    public static function getCoffeeData(mysqli $connection, int $userId): array
+    {
+        $monthAgo = date('Y-m-d H:i:s', strtotime('-30 days'));
+        $sql = "SELECT DATE(ue.created_at) as date, SUM(pe.coffee) as value
+                FROM parsed_entries pe
+                JOIN user_entries ue ON pe.user_entry_id = ue.id
+                WHERE ue.user_id = ? AND ue.created_at >= ? AND pe.coffee > 0
+                GROUP BY date
+                ORDER BY date ASC";
+
+        $stmt = $connection->prepare($sql);
+        $stmt->bind_param("is", $userId, $monthAgo);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rows = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
 }
