@@ -130,7 +130,7 @@ tbody tr:hover {
 }
 
 .btn-edit {
-  background: #4694c7;
+  background: #4caf50;
   color: white;
 }
 
@@ -170,13 +170,13 @@ select {
 }
 
 .badge-admin {
-  background: #ffc107;
-  color: #000;
+  background: #e53935;
+  color: white;
 }
 
 .badge-user {
-  background: #17a2b8;
-  color: white;
+  background: #a5d6a7;
+  color: #2e7d32;
 }
 
 .modal {

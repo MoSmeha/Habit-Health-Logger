@@ -171,7 +171,6 @@ document.getElementById("userForm").addEventListener("submit", async (e) => {
     const data = await response.json();
 
     if (data.status === 200 || data.status === 201) {
-      alert(data.message);
       closeModal();
       loadUsers();
     } else {
@@ -199,7 +198,6 @@ async function deleteUser(id, username) {
     const data = await response.json();
 
     if (data.status === 200) {
-      alert(data.message);
       loadUsers();
     } else {
       showError(data.message);
