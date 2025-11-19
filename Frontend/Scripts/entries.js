@@ -7,6 +7,23 @@ function getUser() {
   const user = localStorage.getItem("user");
   return user ? JSON.parse(user) : null;
 }
+function renderAdminLink() {
+  const user = getUser();
+  const navbar = document.getElementById("navbarLinks");
+
+  if (!user || !navbar) return;
+
+  // Prevent duplicating admin link if the page reloads
+  if (document.getElementById("adminLink")) return;
+
+  if (user.role === "admin") {
+    const link = document.createElement("a");
+    link.href = "admin.html";
+    link.id = "adminLink";
+    link.innerText = "Admin";
+    navbar.appendChild(link);
+  }
+}
 
 function showError(message) {
   const errorEl = document.getElementById("error");
@@ -187,6 +204,6 @@ async function deleteEntry(id) {
     showError("Network error: " + error.message);
   }
 }
-
+renderAdminLink();
 // Load entries on page load
 fetchEntries();

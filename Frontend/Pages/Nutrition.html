@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meal Suggestions</title>
+    <link rel="stylesheet" href="../styles/nutrition.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-left">
+        <a class="logo" href="dashboard.html"><span>Health AI</span></a>
+      </div>
+
+      <div class="nav-right" id="navbarLinks">
+        <a href="entries.html">Entries</a>
+        <a href="habits.html">Habits</a>
+        <a class="active" href="Login.html">Nutrition</a>
+        <a href="#">later</a>
+      </div>
+    </nav>
+    <div class="container">
+      <header>
+        <h1>Meal Suggestions</h1>
+        <p class="subtitle">
+          Get personalized healthy meal recommendations based on your diet
+        </p>
+      </header>
+
+      <div style="text-align: center; margin-bottom: 2em">
+        <button id="get-suggestions-btn" class="btn">Get Suggestions</button>
+      </div>
+
+      <div id="error-container"></div>
+      <div id="loading-container"></div>
+      <div id="suggestions-container"></div>
+
+      <div class="empty-state">
+        <h3>No suggestions yet</h3>
+        <p>Click the button above to get personalized meal recommendations</p>
+      </div>
+    </div>
+
+    <script src="../Scripts/nutrition.js"></script>
+  </body>
+</html>
