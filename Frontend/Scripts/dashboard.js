@@ -194,6 +194,7 @@ submitBtn.addEventListener("click", async () => {
       document.getElementById("coffee").value = "";
       document.getElementById("walked").value = "";
       document.getElementById("meal").value = "";
+      loadChartData();
     } else {
       responseDiv.textContent =
         "Error: " + (response.data?.error || "Unknown error");
@@ -202,3 +203,61 @@ submitBtn.addEventListener("click", async () => {
     responseDiv.textContent = "Error: " + err.message;
   }
 });
+
+async function fetchChartData(action) {
+  if (!userId) {
+    console.error("No user ID found for chart data.");
+    return;
+  }
+  const url = `http://localhost/Health_AI/Backend/Controllers/HabitAnalysisController.php?action=${action}&user_id=${userId}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    console.error("Failed to fetch chart data");
+    return [];
+  }
+  const result = await response.json();
+  return result.data;
+}
+
+function renderChart(canvasId, label, data, type = "bar") {
+  const ctx = document.getElementById(canvasId).getContext("2d");
+  const labels = data.map((d) => d.date);
+  const values = data.map((d) => d.value);
+
+  new Chart(ctx, {
+    type: type,
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: label,
+          data: values,
+          borderColor: "rgba(56, 156, 52, 1)",
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderWidth: 1,
+        },
+      ],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+}
+
+async function loadChartData() {
+  const sleepData = await fetchChartData("sleep_data");
+  if (sleepData && sleepData.length > 0) {
+    renderChart("sleepChart", "Sleep (hours)", sleepData, "line");
+  }
+
+  const coffeeData = await fetchChartData("coffee_data");
+  if (coffeeData && coffeeData.length > 0) {
+    renderChart("coffeeChart", "Coffee (cups)", coffeeData);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadChartData);
