@@ -17,14 +17,18 @@ body {
 
 .nav-left .logo {
   font-size: 1.2em;
-  font-weight: bold;
+
   color: white !important;
+  text-decoration: none !important;
+  font-family: "Kings", cursive;
+  font-weight: 600;
 }
 
 .nav-right a {
   margin-left: 20px;
   color: white !important;
   font-size: 14px;
+  text-decoration: none !important;
 }
 
 .nav-right a.active {

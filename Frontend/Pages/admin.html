@@ -4,13 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Management</title>
-    <link rel="stylesheet" href="../styles/nav.css" />
+
     <link rel="stylesheet" href="../styles/admin.css" />
+    <link rel="stylesheet" href="../styles/nav.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kings&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <nav class="navbar">
       <div class="nav-left">
-        <a class="logo" href="dashboard.html"><span>Health AI</span></a>
+        <a class="logo" href="dashboard.html"><span>HealthCore</span></a>
       </div>
       <div class="nav-right" id="navbarLinks">
         <a href="entries.html">Entries</a>
@@ -25,7 +32,6 @@
         <button class="btn btn-primary" onclick="openCreateModal()">
           Add New User
         </button>
-        <button class="btn btn-secondary" onclick="loadUsers()">Refresh</button>
       </div>
 
       <div id="loading" class="loading" style="display: none">
@@ -77,8 +83,7 @@
         </form>
       </div>
     </div>
-
-    <script src="../Scripts/admin.js"></script>
     <script src="../Scripts/nav.js"></script>
+    <script src="../Scripts/admin.js"></script>
   </body>
 </html>
